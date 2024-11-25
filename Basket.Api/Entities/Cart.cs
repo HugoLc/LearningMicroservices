@@ -1,13 +1,13 @@
 namespace Basket.Api.Entities
 {
-    public class Basket
+    public class Cart
     {
         public string UserName { get; set; } ="";
-        public List<BasketItem> Items { get; set; } =[];        
-        public Basket()
+        public List<CartItem> Items { get; set; } =[];        
+        public Cart()
         {
         }   
-        public Basket(string userName) 
+        public Cart(string userName) 
         {
             UserName = userName;
         }
