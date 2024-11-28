@@ -14,7 +14,7 @@ public class DiscountRepository : IDiscountRepository
 
     private NpgsqlConnection GetConn()
     {
-        return new NpgsqlConnection(_configuration.GetValue<string>("DatabaseSettings:ConnectionString"));
+        return new NpgsqlConnection(_configuration.GetValue<string>("DataSettings:ConnectionString"));
     }
     public async Task<Coupon> GetDiscount(string productName)
     {
@@ -30,16 +30,25 @@ public class DiscountRepository : IDiscountRepository
         }
         return coupon;
     }
-    public Task<bool> CreateDiscount(Coupon coupon)
+    public async Task<bool> CreateDiscount(Coupon coupon)
     {
-        throw new NotImplementedException();
+        var connection = GetConn();
+        var affected = await connection.ExecuteAsync("INSERT INTO Coupon (Productname, Description, Amount) VALUES (@ProductName, @Description, @Amount)", new { Productname = coupon.ProductName, Description= coupon.Description, Amount = coupon.Amount });
+
+        return affected > 1;        
     }
-    public Task<bool> UpdateDiscount(Coupon coupon)
+    public async Task<bool> UpdateDiscount(Coupon coupon)
     {
-        throw new NotImplementedException();
+        var connection = GetConn();
+        var affected = await connection.ExecuteAsync("UPDATE Coupon SET ProductName=@ProductName, Description=@Description, Amount=@Amount WHERE Id=@Id", new { Productname = coupon.ProductName, Description= coupon.Description, Amount = coupon.Amount, Id = coupon.Id });
+
+        return affected > 1;        
     }
-    public Task<bool> DeleteDiscount(string productName)
+    public async Task<bool> DeleteDiscount(string productName)
     {
-        throw new NotImplementedException();
+        var connection = GetConn();
+        var affected = await connection.ExecuteAsync("DELETE FROM Coupon WHERE ProductName = @Productname", new {ProductName = productName});
+
+        return affected > 1;     
     }
 }
