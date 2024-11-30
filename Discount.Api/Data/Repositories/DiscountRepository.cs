@@ -35,20 +35,20 @@ public class DiscountRepository : IDiscountRepository
         var connection = GetConn();
         var affected = await connection.ExecuteAsync("INSERT INTO Coupon (Productname, Description, Amount) VALUES (@ProductName, @Description, @Amount)", new { Productname = coupon.ProductName, Description= coupon.Description, Amount = coupon.Amount });
 
-        return affected > 1;        
+        return affected > 0;        
     }
     public async Task<bool> UpdateDiscount(Coupon coupon)
     {
         var connection = GetConn();
         var affected = await connection.ExecuteAsync("UPDATE Coupon SET ProductName=@ProductName, Description=@Description, Amount=@Amount WHERE Id=@Id", new { Productname = coupon.ProductName, Description= coupon.Description, Amount = coupon.Amount, Id = coupon.Id });
 
-        return affected > 1;        
+        return affected > 0;        
     }
     public async Task<bool> DeleteDiscount(string productName)
     {
         var connection = GetConn();
         var affected = await connection.ExecuteAsync("DELETE FROM Coupon WHERE ProductName = @Productname", new {ProductName = productName});
 
-        return affected > 1;     
+        return affected > 0;     
     }
 }

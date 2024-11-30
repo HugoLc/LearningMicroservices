@@ -53,13 +53,14 @@ services:
     image: dpage/pgadmin4
     container_name: pgadmin
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@abc.container_name
+      - PGADMIN_DEFAULT_EMAIL=admin@abc.com
       - PGADMIN_DEFAULT_PASSWORD=admin
-    restart: always
     ports:
       - "5050:80"
     volumes:
       - pgadmin_data:/root/.pgadmin
+    depends_on:
+     - discount-postgres
   discount-api:
     container_name: discount-api
     build:
