@@ -18,6 +18,10 @@ namespace Basket.Api.Entities
                 foreach (var item in Items)
                 {
                     totalPrice += item.Price * item.Quantity;
+                    if(item.Discount.HasValue)
+                    {
+                        totalPrice -= item.Discount.Value;
+                    }
                 }
                 return totalPrice;
             }

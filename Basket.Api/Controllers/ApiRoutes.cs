@@ -1,5 +1,6 @@
 using Basket.Api.Data.Repositories;
 using Basket.Api.Entities;
+using Basket.Api.Entities.Dto;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +9,9 @@ public static class ApiRoutes
 {   
     public static void AddApiRoutes(this WebApplication app)
     {
-        app.MapGet("/api/v1/get-basket/{userName}", async (string userName, [FromServices] IBasketRepository repository)=>
+        app.MapGet("/api/v1/get-basket/{userName}", async (
+            string userName, 
+            [FromServices] IBasketRepository repository)=>
         {
             var basket = await repository.GetBasketAsync(userName);
             return Results.Ok(basket ?? new Cart(userName));
@@ -16,8 +19,23 @@ public static class ApiRoutes
         .WithName("GetBasket")
         .WithOpenApi();
 
-        app.MapPost("/api/v1/update-basket",async ([FromBody] Cart basket, [FromServices] IBasketRepository repo) =>
-        {
+        app.MapPost("/api/v1/update-basket",async (
+            [FromBody] Cart basket, 
+            [FromServices] IBasketRepository repo, 
+            [FromServices] HttpClient httpClient) =>
+        { 
+            foreach (var item in basket.Items)
+            {
+                var response = await httpClient.GetAsync($"http://discount-api/api/v1/get-discount/{item.ProductName}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var coupon = await response.Content.ReadFromJsonAsync<CouponDto>();
+                    if (coupon != null)
+                    {
+                        item.Discount = coupon.Amount * item.Quantity;
+                    }
+                }
+            }
             return Results.Ok(await repo.UpdateBasketAsync(basket));
         })
         .WithName("UpadateBasket")

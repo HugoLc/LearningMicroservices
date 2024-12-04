@@ -11,6 +11,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.Configuration = Environment.GetEnvironmentVariable("CacheSettings:ConnectionString");
 });
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
