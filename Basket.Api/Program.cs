@@ -1,5 +1,6 @@
 using Basket.Api.Controllers;
 using Basket.Api.Data.Repositories;
+using Basket.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.AddStackExchangeRedisCache(options =>
 });
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 builder.Services.AddHttpClient();
+builder.Services.AddRabbitMQService();
+
 
 var app = builder.Build();
 

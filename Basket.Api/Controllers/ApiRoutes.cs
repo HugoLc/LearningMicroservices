@@ -1,6 +1,7 @@
 using Basket.Api.Data.Repositories;
 using Basket.Api.Entities;
 using Basket.Api.Entities.Dto;
+using MassTransit;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,6 +46,19 @@ public static class ApiRoutes
         {
             await repo.DeleteBasketAsync(userName);
             return Results.NoContent();
+        })
+        .WithName("DeleteBasket")
+        .WithOpenApi();
+        
+        app.MapPost("/api/v1/set-checkout", async (
+            [FromBody] CheckoutDto checkout,
+            IBus bus )=>
+        {  
+            var cartCheckout = new BasketCheckout(checkout.Basket, checkout.Customer);
+            await bus.Publish(cartCheckout);
+
+            return Results.Ok(cartCheckout);
+            //TODO: criar projeto de orders
         })
         .WithName("DeleteBasket")
         .WithOpenApi();
