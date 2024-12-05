@@ -58,7 +58,6 @@ public static class ApiRoutes
             await bus.Publish(cartCheckout);
 
             return Results.Ok(cartCheckout);
-            //TODO: criar projeto de orders
         })
         .WithName("DeleteBasket")
         .WithOpenApi();
